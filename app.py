@@ -100,3 +100,24 @@ def get_bookings():
     for apt in apartments:
         for b in apt.get("bookings", []):
             color = "green" if b["status"]=="Available" else ("red" if b["status"]=="Reserved" else "orange")
+            events.append({
+                "title": f"{apt['name']} {b['status']} (${b['price']})",
+                "start": b["start"],
+                "end": b["end"],
+                "color": color
+            })
+    return jsonify(events)
+
+# ---- Run ----
+if __name__ == "__main__":
+    import socket
+
+    # Find a free port automatically
+    sock = socket.socket()
+    sock.bind(('', 0))
+    port = sock.getsockname()[1]
+    sock.close()
+
+    print(f"Starting server on port {port}")
+    app.run(debug=True, host="0.0.0.0", port=port)
+
