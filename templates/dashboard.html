@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h3 class="mb-4">Apartment Overview</h3>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th width="200"></th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for apt in apartments %}
+        <tr>
+            <td>{{ apt.name }}</td>
+            <td>{{ apt.type }}</td>
+            <td>
+                <span class="badge 
+                    {% if apt.status=='Available' %} bg-success
+                    {% elif apt.status=='Reserved' %} bg-danger
+                    {% else %} bg-warning text-dark
+                    {% endif %}">
+                    {{ apt.status }}
+                </span>
+            </td>
+            <td>
+                <form method="POST" action="/update" class="d-flex">
+                    <input type="hidden" name="id" value="{{ apt.id }}">
+                    <select name="status" class="form-select me-2">
+                        <option>Available</option>
+                        <option>Reserved</option>
+                        <option>On Hold</option>
+                    </select>
+                    <button class="btn btn-sm btn-primary">Save</button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<a href="/calendar" class="btn btn-secondary mt-3">📅 View Calendar</a>
+
+{% endblock %}
