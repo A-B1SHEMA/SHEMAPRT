@@ -2,14 +2,18 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-app.secret_key = "SECRET_KEY_CHANGE_THIS"
+app.secret_key = "CHANGE_THIS_SECRET"  # change this for security
 
-# ---- USERS ----
+# -------------------------
+# Users
+# -------------------------
 users = {
-    "admin": generate_password_hash("admin123")
+    "admin": generate_password_hash("admin123")  # default admin user
 }
 
-# ---- APARTMENTS ----
+# -------------------------
+# Apartments
+# -------------------------
 apartments = [
     {"id": 1, "name": "A1", "type": "1 Bedroom", "status": "Available", "booked_date": "2025-12-10"},
     {"id": 2, "name": "A2", "type": "1 Bedroom", "status": "Reserved", "booked_date": "2025-12-11"},
@@ -20,23 +24,28 @@ apartments = [
     {"id": 7, "name": "C1", "type": "3 Bedroom", "status": "Available", "booked_date": "2025-12-16"},
 ]
 
-# ---- LOGIN REQUIRED DECORATOR ----
+# -------------------------
+# Login required decorator
+# -------------------------
 def login_required(f):
     from functools import wraps
     @wraps(f)
-    def wrapper(*args, **kwargs):
+    def decorated_function(*args, **kwargs):
         if "user" not in session:
             return redirect(url_for("login"))
         return f(*args, **kwargs)
-    return wrapper
+    return decorated_function
 
-# ---- LOGIN ----
+# -------------------------
+# Routes
+# -------------------------
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     error = None
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
+        username = request.form.get("username")
+        password = request.form.get("password")
         if username in users and check_password_hash(users[username], password):
             session["user"] = username
             return redirect(url_for("dashboard"))
@@ -49,18 +58,16 @@ def logout():
     session.clear()
     return redirect(url_for("login"))
 
-# ---- DASHBOARD ----
 @app.route("/")
 @login_required
 def dashboard():
     return render_template("dashboard.html", apartments=apartments)
 
-# ---- UPDATE APARTMENT STATUS ----
 @app.route("/update", methods=["POST"])
 @login_required
 def update():
-    apt_id = int(request.form["id"])
-    new_status = request.form["status"]
+    apt_id = int(request.form.get("id"))
+    new_status = request.form.get("status")
     new_date = request.form.get("booked_date", "")
     for apt in apartments:
         if apt["id"] == apt_id:
@@ -69,7 +76,11 @@ def update():
                 apt["booked_date"] = new_date
     return redirect(url_for("dashboard"))
 
-# ---- GET BOOKINGS FOR CALENDAR ----
+@app.route("/calendar")
+@login_required
+def calendar():
+    return render_template("calendar.html")
+
 @app.route("/get_bookings")
 @login_required
 def get_bookings():
@@ -83,11 +94,14 @@ def get_bookings():
         })
     return jsonify(events)
 
-# ---- CALENDAR ----
-@app.route("/calendar")
-@login_required
-def calendar():
-    return render_template("calendar.html")
+# -------------------------
+# Run the app
+# -------------------------
+if __name__ == "__main__":
+    # host 0.0.0.0 allows access from Codespaces / network
+    # port 8080 is easy to forward
+    app.run(debug=True, host="0.0.0.0", port=8080)
+
 
 # ---- RUN ----
 if __name__ == "__main__":
