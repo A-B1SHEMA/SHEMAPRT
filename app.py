@@ -9,15 +9,50 @@ users = {
     "admin": generate_password_hash("admin123")
 }
 
-# ---- Apartments ----
+# ---- Apartments with 3 preloaded bookings each ----
 apartments = [
-    {"id": 1, "name": "A1", "type": "1 Bedroom", "status": "Available", "bookings": []},
-    {"id": 2, "name": "A2", "type": "1 Bedroom", "status": "Available", "bookings": []},
-    {"id": 3, "name": "B1", "type": "2 Bedroom", "status": "Available", "bookings": []},
-    {"id": 4, "name": "B2", "type": "2 Bedroom", "status": "Available", "bookings": []},
-    {"id": 5, "name": "B3", "type": "2 Bedroom", "status": "Available", "bookings": []},
-    {"id": 6, "name": "B4", "type": "2 Bedroom", "status": "Available", "bookings": []},
-    {"id": 7, "name": "C1", "type": "3 Bedroom", "status": "Available", "bookings": []},
+    {"id": 1, "name": "A1", "type": "1 Bedroom", "status": "Reserved",
+     "bookings": [
+         {"start": "2025-12-01", "end": "2025-12-03", "status": "Reserved", "price": 150, "deposit": 50},
+         {"start": "2025-12-05", "end": "2025-12-07", "status": "Available", "price": 0, "deposit": 0},
+         {"start": "2025-12-10", "end": "2025-12-12", "status": "On Hold", "price": 200, "deposit": 50}
+     ]},
+    {"id": 2, "name": "A2", "type": "1 Bedroom", "status": "Available",
+     "bookings": [
+         {"start": "2025-12-02", "end": "2025-12-04", "status": "Available", "price": 0, "deposit": 0},
+         {"start": "2025-12-08", "end": "2025-12-10", "status": "Reserved", "price": 180, "deposit": 40},
+         {"start": "2025-12-12", "end": "2025-12-14", "status": "On Hold", "price": 200, "deposit": 50}
+     ]},
+    {"id": 3, "name": "B1", "type": "2 Bedroom", "status": "On Hold",
+     "bookings": [
+         {"start": "2025-12-01", "end": "2025-12-03", "status": "On Hold", "price": 250, "deposit": 70},
+         {"start": "2025-12-05", "end": "2025-12-07", "status": "Reserved", "price": 300, "deposit": 80},
+         {"start": "2025-12-09", "end": "2025-12-11", "status": "Available", "price": 0, "deposit": 0}
+     ]},
+    {"id": 4, "name": "B2", "type": "2 Bedroom", "status": "Available",
+     "bookings": [
+         {"start": "2025-12-03", "end": "2025-12-05", "status": "Available", "price": 0, "deposit": 0},
+         {"start": "2025-12-07", "end": "2025-12-09", "status": "Reserved", "price": 320, "deposit": 100},
+         {"start": "2025-12-11", "end": "2025-12-13", "status": "On Hold", "price": 300, "deposit": 50}
+     ]},
+    {"id": 5, "name": "B3", "type": "2 Bedroom", "status": "Reserved",
+     "bookings": [
+         {"start": "2025-12-02", "end": "2025-12-04", "status": "Reserved", "price": 280, "deposit": 90},
+         {"start": "2025-12-06", "end": "2025-12-08", "status": "Available", "price": 0, "deposit": 0},
+         {"start": "2025-12-10", "end": "2025-12-12", "status": "On Hold", "price": 350, "deposit": 120}
+     ]},
+    {"id": 6, "name": "B4", "type": "2 Bedroom", "status": "On Hold",
+     "bookings": [
+         {"start": "2025-12-01", "end": "2025-12-03", "status": "On Hold", "price": 300, "deposit": 100},
+         {"start": "2025-12-05", "end": "2025-12-07", "status": "Available", "price": 0, "deposit": 0},
+         {"start": "2025-12-09", "end": "2025-12-11", "status": "Reserved", "price": 320, "deposit": 90}
+     ]},
+    {"id": 7, "name": "C1", "type": "3 Bedroom", "status": "Reserved",
+     "bookings": [
+         {"start": "2025-12-03", "end": "2025-12-05", "status": "Reserved", "price": 500, "deposit": 150},
+         {"start": "2025-12-07", "end": "2025-12-09", "status": "On Hold", "price": 550, "deposit": 200},
+         {"start": "2025-12-11", "end": "2025-12-13", "status": "Available", "price": 0, "deposit": 0}
+     ]}
 ]
 
 # ---- Login decorator ----
@@ -108,7 +143,7 @@ def get_bookings():
             })
     return jsonify(events)
 
-# ---- Run ----
+# ---- Run app ----
 if __name__ == "__main__":
     import socket
 
@@ -120,4 +155,3 @@ if __name__ == "__main__":
 
     print(f"Starting server on port {port}")
     app.run(debug=True, host="0.0.0.0", port=port)
-
