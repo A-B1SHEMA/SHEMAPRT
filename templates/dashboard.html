@@ -3,7 +3,7 @@
 <h2>Apartment Overview</h2>
 
 {% for apt in apartments %}
-<div style="border:1px solid #ccc; padding:10px; margin-bottom:10px; width:350px;">
+<div style="border:1px solid #ccc; padding:10px; margin-bottom:20px; width:400px;">
     <form method="POST" action="{{ url_for('update_booking') }}">
         <p><strong>Name:</strong> {{ apt.name }}</p>
         <p><strong>Type:</strong> {{ apt.type }}</p>
@@ -28,6 +28,20 @@
         <input type="hidden" name="apt_id" value="{{ apt.id }}">
         <button type="submit">Save Booking</button>
     </form>
+
+    {% if apt.bookings %}
+    <div style="margin-top:10px; padding:5px; border-top:1px solid #aaa;">
+        <strong>Existing Bookings:</strong>
+        <ul>
+            {% for b in apt.bookings %}
+                <li>
+                    {{ b.start }} → {{ b.end }} : {{ b.status }} | ${{ b.price }} | Deposit ${{ b.deposit }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
 </div>
 {% endfor %}
 {% endblock %}
+
