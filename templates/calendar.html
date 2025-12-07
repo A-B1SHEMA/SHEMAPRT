@@ -1,7 +1,47 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<h3>Calendar (coming soon)</h3>
-<p>Here we will show reservations by date.</p>
+<h3>Apartment Booking Calendar</h3>
+
+<!-- Calendar container -->
+<div id="calendar"></div>
+
+<!-- FullCalendar CSS -->
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css' rel='stylesheet' />
+
+<!-- FullCalendar JS -->
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js'></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+
+    // Example events (replace with your real apartment bookings)
+    var events = [
+        { title: 'A1 Reserved', start: '2025-12-10', color: 'red' },
+        { title: 'B3 Available', start: '2025-12-11', color: 'green' },
+        { title: 'C1 On Hold', start: '2025-12-12', color: 'orange' }
+    ];
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        events: events
+    });
+
+    calendar.render();
+});
+</script>
+
+<style>
+#calendar {
+    max-width: 900px;
+    margin: 40px auto;
+}
+</style>
 
 {% endblock %}
