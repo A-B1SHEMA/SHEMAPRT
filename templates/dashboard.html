@@ -1,48 +1,33 @@
 {% extends "layout.html" %}
 {% block content %}
+<h2>Apartment Overview</h2>
 
-<h3 class="mb-4">Apartment Overview</h3>
+{% for apt in apartments %}
+<div style="border:1px solid #ccc; padding:10px; margin-bottom:10px; width:350px;">
+    <form method="POST" action="{{ url_for('update_booking') }}">
+        <p><strong>Name:</strong> {{ apt.name }}</p>
+        <p><strong>Type:</strong> {{ apt.type }}</p>
 
-<table class="table table-bordered table-striped">
-    <thead class="table-dark">
-        <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Status</th>
-            <th width="200"></th>
-        </tr>
-    </thead>
+        <p>
+          <strong>Status:</strong>
+          <select name="status" style="background-color:
+            {% if apt.status=='Available' %}lightgreen
+            {% elif apt.status=='Reserved' %}lightcoral
+            {% else %}orange{% endif %};">
+            <option value="Available" {% if apt.status=="Available" %}selected{% endif %}>Available</option>
+            <option value="Reserved" {% if apt.status=="Reserved" %}selected{% endif %}>Reserved</option>
+            <option value="On Hold" {% if apt.status=="On Hold" %}selected{% endif %}>On Hold</option>
+          </select>
+        </p>
 
-    <tbody>
-    {% for apt in apartments %}
-        <tr>
-            <td>{{ apt.name }}</td>
-            <td>{{ apt.type }}</td>
-            <td>
-                <span class="badge 
-                    {% if apt.status=='Available' %} bg-success
-                    {% elif apt.status=='Reserved' %} bg-danger
-                    {% else %} bg-warning text-dark
-                    {% endif %}">
-                    {{ apt.status }}
-                </span>
-            </td>
-            <td>
-                <form method="POST" action="/update" class="d-flex">
-                    <input type="hidden" name="id" value="{{ apt.id }}">
-                    <select name="status" class="form-select me-2">
-                        <option>Available</option>
-                        <option>Reserved</option>
-                        <option>On Hold</option>
-                    </select>
-                    <button class="btn btn-sm btn-primary">Save</button>
-                </form>
-            </td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+        <p><strong>Start Date:</strong> <input type="date" name="start_date" required></p>
+        <p><strong>End Date:</strong> <input type="date" name="end_date" required></p>
+        <p><strong>Price Paid:</strong> <input type="number" name="price" min="0" required></p>
+        <p><strong>Security Deposit:</strong> <input type="number" name="deposit" min="0" required></p>
 
-<a href="/calendar" class="btn btn-secondary mt-3">📅 View Calendar</a>
-
+        <input type="hidden" name="apt_id" value="{{ apt.id }}">
+        <button type="submit">Save Booking</button>
+    </form>
+</div>
+{% endfor %}
 {% endblock %}
